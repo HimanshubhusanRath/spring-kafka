@@ -1,0 +1,26 @@
+spring:
+  cloud:
+    stream:
+      function:
+        definition: inactiveDomainConsumer 
+
+      bindings:
+        inactiveDomainConsumer-in-0:
+          destination: inactive.web-domains
+
+      kafka:
+        bindings:
+          inactiveDomainConsumer-in-0:
+            consumer:
+              configuration:
+                value:
+                  deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+            
+        binder:
+          brokers:
+          - localhost:9092
+            
+            
+            
+server:
+  port: 8084

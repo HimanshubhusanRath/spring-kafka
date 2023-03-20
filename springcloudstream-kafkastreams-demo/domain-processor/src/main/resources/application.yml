@@ -1,0 +1,57 @@
+spring:
+  cloud:
+    stream:
+      function:
+        definition: activeDomainProcessor;inactiveDomainProcessor # Name of the Bean methods defined in 'KafkaDomainProcessor' class
+        
+    # Define each of the bindings in detail e.g. from which channel the messages will be read from (IN), to which channel messages will be written to (OUT) etc. 
+        
+      bindings:
+        # Binding for WEB-DOMAINS to ACTIVE.WEB-DOMAINS topic
+        activeDomainProcessor-in-0:
+          destination: web-domains
+        activeDomainProcessor-out-0:
+          destination: active.web-domains
+        
+        # Binding for WEB-DOMAINS to INACTIVE.WEB-DOMAINS topic
+        inactiveDomainProcessor-in-0:
+          destination: web-domains
+        inactiveDomainProcessor-out-0:
+          destination: inactive.web-domains
+          
+    # Define the kafka related configurations (serializer/deserializer etc.) for each of the bindings          
+          
+      kafka:
+        bindings:
+          # Config for WEB-DOMAINS to ACTIVE.WEB-DOMAINS topic
+          activeDomainProcessor-in-0:
+            consumer:
+              configuration:
+                value:
+                  deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          
+          activeDomainProcessor-out-0:
+            producer:
+              configuration:
+                value:
+                  serializer: org.springframework.kafka.support.serializer.JsonSerializer
+                  
+          # Config for WEB-DOMAINS to INACTIVE.WEB-DOMAINS topic
+          inactiveDomainProcessor-in-0:
+            consumer:
+              configuration:
+                value:
+                  deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+          
+          inactiveDomainProcessor-out-0:
+            producer:
+              configuration:
+                value:
+                  serializer: org.springframework.kafka.support.serializer.JsonSerializer
+          
+        binders:
+          brokers:
+            - localhost:9092 # Kafka Server Url
+
+server:
+  port: 8082        
